@@ -5,7 +5,6 @@
  * @property {boolean} requires
  * @property {object} dependencies
  */
-
 const packageLockFile = require('./package-lock.json')
 const {lockfileVersion} = packageLockFile
 

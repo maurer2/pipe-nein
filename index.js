@@ -1,13 +1,13 @@
-const emoji = require('node-emoji')
+/** @typedef {object} json
+ * @property {string} name
+ * @property {string} version
+ * @property {number} lockfileVersion
+ * @property {boolean} requires
+ * @property {object} dependencies
+ */
 
-const emojified = emoji.emojify(':cat:');
-// console.log(`hello ${emojified}`)
+const packageLockFile = require('./package-lock.json')
+const {lockfileVersion} = packageLockFile
 
-const packageLockVersion = 1;
-
-// console.log(`hello ${emojified}`)
-
-console.log(packageLockVersion)
-
-// process.stdout.write(1);
+console.log(lockfileVersion)
 process.exitCode = 0;

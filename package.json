@@ -1,0 +1,23 @@
+{
+  "name": "pipe-nein",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "main": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maurer2/pipe-nein.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maurer2/pipe-nein/issues"
+  },
+  "homepage": "https://github.com/maurer2/pipe-nein#readme",
+  "dependencies": {
+    "node-emoji": "^1.11.0"
+  }
+}

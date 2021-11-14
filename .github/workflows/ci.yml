@@ -17,5 +17,14 @@ jobs:
 
     - run: npm install
 
-    - name: Run main
-      run: npm run main
+    - name: Set Output version from node script
+      id: id
+      run: echo "::set-output name=PACKAGE_LOCK_VERSION::$(node index.js)"
+
+    - run: echo ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
+
+    - name: Trigger failing of script if package-lock version mismatches
+      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }} != 2
+      uses: actions/github-script@v3
+      with:
+        script: core.setFailed('Package.lock version mismatch')

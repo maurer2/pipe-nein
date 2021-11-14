@@ -1,0 +1,19 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v
+      with:
+        node-version: '14'
+        cache: 'npm'
+
+    - name: Run main
+      run: npm run main

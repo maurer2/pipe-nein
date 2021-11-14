@@ -23,8 +23,8 @@ jobs:
 
     - run: echo ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
 
-    - name: Trigger failing of script if package-lock version mismatches
-      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }} != 2
+    - name: Check for desired package-lock version
+      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != 1 }}
       uses: actions/github-script@v3
       with:
-        script: core.setFailed('Package.lock version mismatch')
+        script: core.setFailed('Package.lock version mismatch.')

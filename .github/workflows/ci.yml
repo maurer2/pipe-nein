@@ -8,23 +8,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout latest commit
+      uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
+    - name: Setup npm
+      uses: actions/setup-node@v2
       with:
         node-version: '14'
         cache: 'npm'
 
-    - run: npm install
+    - name: Install npm dependencies
+      run: npm install
 
-    - name: Set Output version from node script
+    - name: Get lock file version from script and set it as variable
       id: id
       run: echo "::set-output name=PACKAGE_LOCK_VERSION::$(node index.js)"
 
-    - run: echo ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
+    - name: Output PACKAGE_LOCK_VERSION
+      run: echo PACKAGE_LOCK_VERSION ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
 
-    - name: Check for desired package-lock version
+    - name: Check for desired package-lock version and fail build in case of version mismatch
       if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != 1 }}
       uses: actions/github-script@v3
       with:
-        script: core.setFailed('Package.lock version mismatch.')
+        script: core.setFailed('Package-lock.json version mismatch.')

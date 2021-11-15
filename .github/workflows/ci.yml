@@ -11,7 +11,7 @@ jobs:
     - name: Checkout latest commit
       uses: actions/checkout@v2
 
-    - name: Setup npm
+    - name: Install node and npm
       uses: actions/setup-node@v2
       with:
         node-version: '14'
@@ -34,8 +34,6 @@ jobs:
         echo DESIRED_PACKAGE_LOCK_VERSION ${{ steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
 
     - name: Check for desired package-lock version and fail build in case of version mismatch
-      env:
-        DESIRED_PACKAGE_LOCK_VERSION: 1
       if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
       uses: actions/github-script@v3
       with:

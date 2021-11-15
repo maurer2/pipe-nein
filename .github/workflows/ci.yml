@@ -11,7 +11,7 @@ jobs:
     - name: Checkout latest commit
       uses: actions/checkout@v2
 
-    - name: Setup npm
+    - name: Install node and npm
       uses: actions/setup-node@v2
       with:
         node-version: '14'
@@ -20,15 +20,21 @@ jobs:
     - name: Install npm dependencies
       run: npm install
 
-    - name: Get lock file version from script and set it as variable
+    - name: Get lock file version from script and set it as variable and set DESIRED_PACKAGE_LOCK_VERSION as variable
       id: id
-      run: echo "::set-output name=PACKAGE_LOCK_VERSION::$(node index.js)"
+      env:
+        DESIRED_PACKAGE_LOCK_VERSION: 1
+      run: |
+        echo "::set-output name=PACKAGE_LOCK_VERSION::$(node index.js)"
+        echo "::set-output name=DESIRED_PACKAGE_LOCK_VERSION::$DESIRED_PACKAGE_LOCK_VERSION"
 
-    - name: Output PACKAGE_LOCK_VERSION
-      run: echo PACKAGE_LOCK_VERSION ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
+    - name: Output variable
+      run: |
+        echo PACKAGE_LOCK_VERSION ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
+        echo DESIRED_PACKAGE_LOCK_VERSION ${{ steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
 
     - name: Check for desired package-lock version and fail build in case of version mismatch
-      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != 1 }}
+      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
       uses: actions/github-script@v3
       with:
         script: core.setFailed('Package-lock.json version mismatch.')

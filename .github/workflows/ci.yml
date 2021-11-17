@@ -21,20 +21,30 @@ jobs:
       run: npm install
 
     - name: Get lock file version from script and set it as variable and set DESIRED_PACKAGE_LOCK_VERSION as variable
-      id: id
+      id: id1
       env:
         DESIRED_PACKAGE_LOCK_VERSION: 1
       run: |
-        echo "::set-output name=PACKAGE_LOCK_VERSION::$(node index.js)"
         echo "::set-output name=DESIRED_PACKAGE_LOCK_VERSION::$DESIRED_PACKAGE_LOCK_VERSION"
+
+    - name: Import package-lock.json and save in PACKAGE_LOCK_FILE variable
+      id: id2
+      run: |
+        package_lock=`cat ./package-lock.json`
+
+        package_lock="${package_lock//'%'/'%25'}"
+        package_lock="${package_lock//$'\n'/'%0A'}"
+        package_lock="${package_lock//$'\r'/'%0D'}"
+
+        echo "::set-output name=PACKAGE_LOCK_FILE::$package_lock"
 
     - name: Output variable
       run: |
-        echo PACKAGE_LOCK_VERSION ${{ steps.id.outputs.PACKAGE_LOCK_VERSION }}
-        echo DESIRED_PACKAGE_LOCK_VERSION ${{ steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
+        echo DESIRED_PACKAGE_LOCK_VERSION ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
+        echo PACKAGE_LOCK_VERSION ${{ fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
 
     - name: Check for desired package-lock version and fail build in case of version mismatch
-      if: ${{ steps.id.outputs.PACKAGE_LOCK_VERSION != steps.id.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
+      if: ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION != fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
       uses: actions/github-script@v3
       with:
         script: core.setFailed('Package-lock.json version mismatch.')

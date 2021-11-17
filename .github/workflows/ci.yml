@@ -44,7 +44,7 @@ jobs:
         echo PACKAGE_LOCK_VERSION ${{ fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
 
     - name: Check for desired package-lock version and fail build in case of version mismatch
-      if: ${{ steps.id1.outputs.PACKAGE_LOCK_VERSION != fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
+      if: ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION != fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
       uses: actions/github-script@v3
       with:
         script: core.setFailed('Package-lock.json version mismatch.')

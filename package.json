@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "main": "node index.js"
+    "main": "node index.js",
+    "act:package-lock": "act -j build -W .github/workflows/ci.yml"
   },
   "repository": {
     "type": "git",

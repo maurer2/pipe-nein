@@ -1,0 +1,18 @@
+name: PR_NAME
+
+on: [pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Output
+      run: echo PR_NAME ${{ github.event.pull_request.title }}
+
+    - name: Check if pr-title has correct format
+      if: startsWith(github.event.pull_request.title, '[MEOW-') != true # workaround for missing if not
+      uses: actions/github-script@v3
+      with:
+        script: core.setFailed('Pull request name invalid')

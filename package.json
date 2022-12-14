@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "main": "node index.js",
-    "act:package-lock": "act --env-file .env -j build -w .github/workflows/ci.yml -r"
+    "act:package-lock": "act --secret-file .env -W .github/workflows/ci.yml -j build -w",
+    "act:pr-name-valid": "act --secret-file .env -W .github/workflows/pr-name.yml -j build -e events/pr-valid.json -w",
+    "act:pr-name-invalid": "act --secret-file .env -W .github/workflows/pr-name.yml -j build -e events/pr-invalid.json -w"
   },
   "repository": {
     "type": "git",

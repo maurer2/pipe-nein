@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout latest commit
@@ -25,26 +25,22 @@ jobs:
       env:
         DESIRED_PACKAGE_LOCK_VERSION: 1
       run: |
-        echo "::set-output name=DESIRED_PACKAGE_LOCK_VERSION::$DESIRED_PACKAGE_LOCK_VERSION"
+        echo "DESIRED_PACKAGE_LOCK_VERSION=${DESIRED_PACKAGE_LOCK_VERSION}" >> $GITHUB_OUTPUT
 
     - name: Import package-lock.json and save in PACKAGE_LOCK_FILE variable
       id: id2
       run: |
-        package_lock=`cat ./package-lock.json`
-
-        package_lock="${package_lock//'%'/'%25'}"
-        package_lock="${package_lock//$'\n'/'%0A'}"
-        package_lock="${package_lock//$'\r'/'%0D'}"
-
-        echo "::set-output name=PACKAGE_LOCK_FILE::$package_lock"
+        package_lock_file_version=`cat ./package-lock.json | jq '.lockfileVersion'`
+        echo "PACKAGE_LOCK_VERSION=${package_lock_file_version}" >> $GITHUB_OUTPUT
 
     - name: Output variable
+      id: output
       run: |
         echo DESIRED_PACKAGE_LOCK_VERSION ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION }}
-        echo PACKAGE_LOCK_VERSION ${{ fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
+        echo PACKAGE_LOCK_VERSION ${{ steps.id2.outputs.PACKAGE_LOCK_VERSION }}
 
     - name: Check for desired package-lock version and fail build in case of version mismatch
-      if: ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION != fromJson(steps.id2.outputs.PACKAGE_LOCK_FILE).lockfileVersion }}
+      if: ${{ steps.id1.outputs.DESIRED_PACKAGE_LOCK_VERSION != steps.id2.outputs.PACKAGE_LOCK_VERSION }}
       uses: actions/github-script@v3
       with:
         script: core.setFailed('Package-lock.json version mismatch.')

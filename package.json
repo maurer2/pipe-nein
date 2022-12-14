@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "main": "node index.js",
-    "act:package-lock": "act -j build -W .github/workflows/ci.yml"
+    "act:package-lock": "act -s GITHUB_TOKEN -j build -w .github/workflows/ci.yml -r",
+    "act:package-lock:run": "nodenv -E .env --exec 'npm run act:package-lock'"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/maurer2/pipe-nein#readme",
   "dependencies": {
-    "node-emoji": "^1.11.0"
+    "node-emoji": "^1.11.0",
+    "node-env-run": "^4.0.2"
   }
 }
